@@ -20,17 +20,6 @@ public class VariablesTypesMatcher {
 
     private boolean checkType(GraphQLType actualType, GraphQLType expectedType) {
 
-        if (expectedType instanceof GraphQLNonNull) {
-            if (actualType instanceof GraphQLNonNull) {
-                return checkType(((GraphQLNonNull) actualType).getWrappedType(), ((GraphQLNonNull) expectedType).getWrappedType());
-            }
-            return false;
-        }
-
-        if (actualType instanceof GraphQLNonNull) {
-            return checkType(((GraphQLNonNull) actualType).getWrappedType(), expectedType);
-        }
-
         if((actualType instanceof GraphQLEnumType) && (expectedType instanceof GraphQLEnumType)) {
             GraphQLEnumType actualEnum = (GraphQLEnumType) actualType;
             GraphQLEnumType expectedEnum = (GraphQLEnumType) expectedType;
@@ -52,6 +41,19 @@ public class VariablesTypesMatcher {
                 return false;
             }
         }
+
+        if (expectedType instanceof GraphQLNonNull) {
+            if (actualType instanceof GraphQLNonNull) {
+                return checkType(((GraphQLNonNull) actualType).getWrappedType(), ((GraphQLNonNull) expectedType).getWrappedType());
+            }
+            return false;
+        }
+
+        if (actualType instanceof GraphQLNonNull) {
+            return checkType(((GraphQLNonNull) actualType).getWrappedType(), expectedType);
+        }
+
+
 
         if ((actualType instanceof GraphQLList) && (expectedType instanceof GraphQLList)) {
             return checkType(((GraphQLList) actualType).getWrappedType(), ((GraphQLList) expectedType).getWrappedType());
