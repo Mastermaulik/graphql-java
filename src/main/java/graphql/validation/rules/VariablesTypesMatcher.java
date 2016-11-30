@@ -2,9 +2,9 @@ package graphql.validation.rules;
 
 
 import graphql.language.Value;
-import graphql.schema.GraphQLList;
-import graphql.schema.GraphQLNonNull;
-import graphql.schema.GraphQLType;
+import graphql.schema.*;
+
+import java.util.List;
 
 public class VariablesTypesMatcher {
 
@@ -31,10 +31,32 @@ public class VariablesTypesMatcher {
             return checkType(((GraphQLNonNull) actualType).getWrappedType(), expectedType);
         }
 
+        if((actualType instanceof GraphQLEnumType) && (expectedType instanceof GraphQLEnumType)) {
+            GraphQLEnumType actualEnum = (GraphQLEnumType) actualType;
+            GraphQLEnumType expectedEnum = (GraphQLEnumType) expectedType;
+
+            if(actualEnum.getName().equals(expectedEnum.getName())) {
+                List<GraphQLEnumValueDefinition> actualList = actualEnum.getValues();
+                List<GraphQLEnumValueDefinition> expectedList = expectedEnum.getValues();
+
+                if(actualList.size() == expectedList.size()) {
+                    for(int i=0;i<actualList.size();i++) {
+                        if(!actualList.get(i).getName().equals(expectedList.get(i).getName())) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+            else {
+                return false;
+            }
+        }
 
         if ((actualType instanceof GraphQLList) && (expectedType instanceof GraphQLList)) {
             return checkType(((GraphQLList) actualType).getWrappedType(), ((GraphQLList) expectedType).getWrappedType());
         }
+
         return actualType == expectedType;
     }
 

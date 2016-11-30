@@ -81,8 +81,7 @@ publishing {
     publications {
 
         graphqlJava(MavenPublication) {
-            version version
-            from components.java
+            version "2.3.0-SNAPSHOT"
 
             artifact sourcesJar {
                 classifier "sources"
